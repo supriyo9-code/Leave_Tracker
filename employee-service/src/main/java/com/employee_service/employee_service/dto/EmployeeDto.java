@@ -18,7 +18,6 @@ public class EmployeeDto {
     private String email;
     private String phone;
 
-    @NotNull
     private Long managerId;   // self reference (manager)
     @NotBlank(message = "Department name can not be blank")
     private String department;

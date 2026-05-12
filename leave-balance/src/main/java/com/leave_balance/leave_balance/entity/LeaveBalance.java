@@ -16,5 +16,10 @@ public class LeaveBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long employeeId;
+    private Double casual=3.0;
+    private Double paid=4.0;
+    private Double sick=2.0;
+
     
 }
