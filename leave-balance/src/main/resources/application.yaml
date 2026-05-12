@@ -1,3 +1,23 @@
 spring:
   application:
     name: leave-balance
+  datasource:
+    url: jdbc:mysql://localhost:3306/leave_balance_manager
+    username: springstudent
+    password: springstudent
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    web: trace
+
+server:
+  port: 8082

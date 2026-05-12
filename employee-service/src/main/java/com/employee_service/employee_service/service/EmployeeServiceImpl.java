@@ -4,9 +4,12 @@ import com.employee_service.employee_service.dto.EmployeeDto;
 import com.employee_service.employee_service.entity.Employee;
 import com.employee_service.employee_service.payload.LeavePayLoad;
 import com.employee_service.employee_service.repository.EmployeeRepository;
+import com.employee_service.employee_service.response.EmployeeToLeaveBalance;
+import com.leave_balance.leave_balance.dto.LeaveBalanceDto;
 import com.leave_service.leave_service.dto.LeaveDto;
 import com.leave_service.leave_service.entity.Leave;
 import com.leave_service.leave_service.repository.LeaveRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +42,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void addEmployee(EmployeeDto employeeDto) {
+    @Transactional
+    public EmployeeToLeaveBalance addEmployee(EmployeeDto employeeDto) {
         log.trace("Inside addEmployee{}");
         Employee employee1 = employeeRepository.findByEmail(employeeDto.getEmail());
 
@@ -57,7 +61,22 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setRole(employeeDto.getRole());
             employee.setDepartment(employeeDto.getDepartment());
             employeeRepository.save(employee);
+
+            LeaveBalanceDto leaveBalanceDto = restTemplate.postForEntity("http://localhost:8082/api/v1/leave-balance/add/{id}",null, LeaveBalanceDto.class,employee.getId()).getBody();
+
+            EmployeeToLeaveBalance employeeToLeaveBalance = new EmployeeToLeaveBalance();
+            employeeToLeaveBalance.setLeaveBalanceDto(leaveBalanceDto);
+            employeeToLeaveBalance.setName(employeeDto.getName());
+            employeeToLeaveBalance.setEmail(employeeDto.getEmail());
+            employeeToLeaveBalance.setPhone(employeeDto.getPhone());
+            employeeToLeaveBalance.setManagerId(employeeDto.getManagerId());
+            employeeToLeaveBalance.setRole(employeeDto.getRole());
+            employeeToLeaveBalance.setDepartment(employeeDto.getDepartment());
+
+
+
             log.info("addEmployee:{}",employee);
+            return employeeToLeaveBalance;
         }
 
     }
