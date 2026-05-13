@@ -3,6 +3,7 @@ package com.employee_service.employee_service.controller;
 import com.employee_service.employee_service.dto.EmployeeDto;
 import com.employee_service.employee_service.payload.LeavePayLoad;
 import com.employee_service.employee_service.response.EmployeeResponse;
+import com.employee_service.employee_service.response.EmployeeToLeaveBalance;
 import com.employee_service.employee_service.service.EmployeeService;
 import com.leave_service.leave_service.entity.Leave;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class EmployeeToLeaveController {
 
         log.trace("Enter applyLeave");
         EmployeeResponse employeeResponse = new EmployeeResponse();
-        EmployeeDto dto = employeeService.getEmployeeById(id);
+        EmployeeToLeaveBalance dto = employeeService.getEmployeeById(id);
         employeeResponse.setName(dto.getName());
         employeeResponse.setDepartment(dto.getDepartment());
         employeeResponse.setManagerId(dto.getManagerId());

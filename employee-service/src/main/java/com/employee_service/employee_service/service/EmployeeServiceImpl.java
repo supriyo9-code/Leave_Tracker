@@ -27,18 +27,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long id) {
+    public EmployeeToLeaveBalance getEmployeeById(Long id) {
         log.trace("Inside getEmployeeById{}");
-        EmployeeDto employeeDto = new EmployeeDto();
+//        EmployeeDto employeeDto = new EmployeeDto();
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new RuntimeException());
-        employeeDto.setName(employee.getName());
-        employeeDto.setEmail(employee.getEmail());
-        employeeDto.setPhone(employee.getPhone());
-        employeeDto.setManagerId(employee.getManagerId());
-        employeeDto.setDepartment(employee.getDepartment());
-        employeeDto.setRole(employee.getRole());
-        log.info("getEmployeeById:{}",employeeDto);
-        return employeeDto;
+
+        LeaveBalanceDto leaveBalanceDto = restTemplate.getForEntity("http://localhost:8082/api/v1/leave-balance/get/{employeeId}",LeaveBalanceDto.class,employee.getId()).getBody();
+        EmployeeToLeaveBalance employeeToLeaveBalance = new EmployeeToLeaveBalance();
+        employeeToLeaveBalance.setLeaveBalanceDto(leaveBalanceDto);
+        employeeToLeaveBalance.setName(employee.getName());
+        employeeToLeaveBalance.setEmail(employee.getEmail());
+        employeeToLeaveBalance.setPhone(employee.getPhone());
+        employeeToLeaveBalance.setManagerId(employee.getManagerId());
+        employeeToLeaveBalance.setDepartment(employee.getDepartment());
+        employeeToLeaveBalance.setRole(employee.getRole());
+        return employeeToLeaveBalance;
+
+
     }
 
     @Override
@@ -96,11 +101,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDto;
     }
 
+    @Transactional
     @Override
     public void deleteEmployee(Long id) {
         log.trace("Inside deleteEmployee{}");
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new RuntimeException());
         employeeRepository.delete(employee);
+        restTemplate.delete("http://localhost:8082/api/v1/leave-balance/remove/{employeeId}",employee.getId());
         log.info("deleteEmployee:{}",employee);
     }
 
