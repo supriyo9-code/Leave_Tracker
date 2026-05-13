@@ -49,4 +49,22 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         }
 
     }
+
+    @Override
+    public LeaveBalanceDto updateLeaveBalance(LeaveBalanceDto leaveBalanceDto) {
+        LeaveBalance leaveBalance = leaveBalanceRepository.getLeaveBalanceByEmployeeId(leaveBalanceDto.getEmployeeId()).orElseThrow(()->new RuntimeException());
+//        leaveBalance.setEmployeeId(empId);
+        leaveBalance.setCasual(leaveBalanceDto.getCasual()+leaveBalance.getCasual());
+        leaveBalance.setPaid(leaveBalanceDto.getPaid()+leaveBalance.getPaid());
+        leaveBalance.setSick(leaveBalanceDto.getSick()+leaveBalance.getSick());
+        leaveBalanceRepository.save(leaveBalance);
+//        leaveBalanceDto.setEmployeeId(empId);
+        return leaveBalanceDto;
+    }
+
+    @Override
+    public void deleteLeaveBalance(Long empId) {
+        leaveBalanceRepository.getLeaveBalanceByEmployeeId(empId).orElseThrow(()->new RuntimeException());
+        leaveBalanceRepository.deleteById(empId);
+    }
 }

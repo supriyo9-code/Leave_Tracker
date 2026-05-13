@@ -8,6 +8,7 @@ import com.leave_service.leave_service.repository.LeaveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +38,8 @@ public class LeaveServiceImpl implements LeaveService {
             leave.setToDate(leaveDto.getToDate());
 //        leave.setStatus(leaveDto.getStatus());
             leaveRepository.save(leave);
+            long daysBetween = ChronoUnit.DAYS.between(leave.getFromDate(), leave.getToDate())+1;
+            log.info("daysBetween: {}",daysBetween);
             return leave;
         }else{
             log.error("Leave application already exists with employeeId: {} & date: {}",leaveDto.getEmployeeId(),leaveDto.getFromDate());

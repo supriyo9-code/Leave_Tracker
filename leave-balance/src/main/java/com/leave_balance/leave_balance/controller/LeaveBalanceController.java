@@ -32,4 +32,15 @@ public class LeaveBalanceController {
         return new ResponseEntity<>(leaveBalanceDto,HttpStatus.FOUND);
 
     }
+    @PutMapping("/update")
+    public ResponseEntity<LeaveBalanceDto> updateLeaveBalance( @RequestBody LeaveBalanceDto leaveBalanceDto) {
+        LeaveBalanceDto leaveBalanceDto1 =leaveBalanceService.updateLeaveBalance(leaveBalanceDto);
+        return  new ResponseEntity<>(leaveBalanceDto1,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/remove/{empId}")
+    public ResponseEntity<?> removeLeaveBalance(@PathVariable Long empId) {
+       leaveBalanceService.deleteLeaveBalance(empId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

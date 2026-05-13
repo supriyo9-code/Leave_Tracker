@@ -3,8 +3,8 @@ spring:
     name: leave-service
   datasource:
     url: jdbc:mysql://localhost:3306/leave_manager
-    username: springstudent
-    password: springstudent
+    username: supriyomondal
+    password: your_password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

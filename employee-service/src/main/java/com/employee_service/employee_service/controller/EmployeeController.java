@@ -21,11 +21,12 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id){
+    public ResponseEntity<EmployeeToLeaveBalance> getEmployee(@PathVariable Long id){
         log.trace("Inside getEmployeeController: id:{}",id);
-        EmployeeDto employeeDto = employeeService.getEmployeeById(id);
+        EmployeeToLeaveBalance employeeToLeaveBalance = employeeService.getEmployeeById(id);
 
-        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
+
+        return new ResponseEntity<>(employeeToLeaveBalance, HttpStatus.OK);
     }
     @PostMapping("/add")
     public ResponseEntity<EmployeeToLeaveBalance> addEmployee(@Valid @RequestBody EmployeeDto employeeDto){
