@@ -9,6 +9,8 @@ import com.leave_balance.leave_balance.dto.LeaveBalanceDto;
 import com.leave_service.leave_service.dto.LeaveDto;
 import com.leave_service.leave_service.entity.Leave;
 import com.leave_service.leave_service.repository.LeaveRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,25 +28,39 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.restTemplate = restTemplate;
     }
 
+    @CircuitBreaker(name = "getEmployee",fallbackMethod = "fallbackGetEmployee")
+    @Retry(name = "getEmployee")
     @Override
     public EmployeeToLeaveBalance getEmployeeById(Long id) {
         log.trace("Inside getEmployeeById{}");
 //        EmployeeDto employeeDto = new EmployeeDto();
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new RuntimeException());
 
-        LeaveBalanceDto leaveBalanceDto = restTemplate.getForEntity("http://localhost:8082/api/v1/leave-balance/get/{employeeId}",LeaveBalanceDto.class,employee.getId()).getBody();
-        EmployeeToLeaveBalance employeeToLeaveBalance = new EmployeeToLeaveBalance();
-        employeeToLeaveBalance.setLeaveBalanceDto(leaveBalanceDto);
-        employeeToLeaveBalance.setName(employee.getName());
-        employeeToLeaveBalance.setEmail(employee.getEmail());
-        employeeToLeaveBalance.setPhone(employee.getPhone());
-        employeeToLeaveBalance.setManagerId(employee.getManagerId());
-        employeeToLeaveBalance.setDepartment(employee.getDepartment());
-        employeeToLeaveBalance.setRole(employee.getRole());
-        return employeeToLeaveBalance;
+//        try
+//        {
+            LeaveBalanceDto leaveBalanceDto = restTemplate.getForEntity("http://localhost:8082/api/v1/leave-balance/get/{employeeId}",LeaveBalanceDto.class,employee.getId()).getBody();
+            EmployeeToLeaveBalance employeeToLeaveBalance = new EmployeeToLeaveBalance();
+            employeeToLeaveBalance.setLeaveBalanceDto(leaveBalanceDto);
+            employeeToLeaveBalance.setName(employee.getName());
+            employeeToLeaveBalance.setEmail(employee.getEmail());
+            employeeToLeaveBalance.setPhone(employee.getPhone());
+            employeeToLeaveBalance.setManagerId(employee.getManagerId());
+            employeeToLeaveBalance.setDepartment(employee.getDepartment());
+            employeeToLeaveBalance.setRole(employee.getRole());
+            return employeeToLeaveBalance;
+//        }
+//        catch (Exception ex)
+//        {
+//            throw new RuntimeException(ex);
+//        }
 
 
     }
+    public EmployeeToLeaveBalance fallbackGetEmployee(Long id,Exception ex) {
+        log.error(ex.getMessage());
+        return new EmployeeToLeaveBalance();
+    }
+
 
     @Override
     @Transactional
