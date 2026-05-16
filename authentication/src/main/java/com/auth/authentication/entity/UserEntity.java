@@ -21,6 +21,6 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String role;
-    private Long phone;
+    private String phone;
     private String department;
 }
