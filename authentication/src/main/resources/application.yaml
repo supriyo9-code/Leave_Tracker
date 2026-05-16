@@ -3,8 +3,8 @@ spring:
     name: authentication
 
   datasource:
-    username: supriyomondal
-    password: your_password
+    username: springstudent
+    password: springstudent
     url: jdbc:mysql://localhost:3306/authentication_manager
     driver-class-name: com.mysql.cj.jdbc.Driver
 

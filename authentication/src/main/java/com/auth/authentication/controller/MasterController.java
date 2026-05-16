@@ -19,11 +19,13 @@ public class MasterController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserDto> signup(@RequestBody UserDto userDto) {
-       UserDto userDto1 = userService.signupUser(userDto);
+        log.info("Signup Request");
+        UserDto userDto1 = userService.signupUser(userDto);
         return new ResponseEntity<>(userDto1, HttpStatus.OK);
     }
     @GetMapping("/ip")
     public ResponseEntity<String> ip() {
+        log.info("Inside ip method");
         return new ResponseEntity<>("I Love Bihari", HttpStatus.OK);
     }
 

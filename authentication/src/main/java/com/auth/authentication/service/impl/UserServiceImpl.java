@@ -4,9 +4,11 @@ import com.auth.authentication.dto.UserDto;
 import com.auth.authentication.entity.UserEntity;
 import com.auth.authentication.repository.UserRepository;
 import com.auth.authentication.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class UserServiceImpl  implements UserService {
     private UserRepository userRepository;
 
@@ -16,6 +18,7 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public UserDto signupUser(UserDto userDto) {
+        log.info("Signup Request: inside service");
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(userDto.getEmail());
         userEntity.setPassword(userDto.getPassword());
@@ -24,7 +27,9 @@ public class UserServiceImpl  implements UserService {
         userEntity.setPhone(userDto.getPhone());
         userEntity.setRole(userDto.getRole());
         userEntity.setDepartment(userDto.getDepartment());
+
         userRepository.save(userEntity);
+        log.info("Signup Response: saved in database");
         return userDto ;
     }
 }
