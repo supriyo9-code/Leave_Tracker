@@ -14,6 +14,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,11 +29,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.restTemplate = restTemplate;
     }
 
+
     @CircuitBreaker(name = "getEmployee",fallbackMethod = "fallbackGetEmployee")
+    @Cacheable(value = "employeeToLeaveBalance",key = "#id")
     @Retry(name = "getEmployee")
     @Override
     public EmployeeToLeaveBalance getEmployeeById(Long id) {
         log.trace("Inside getEmployeeById{}");
+        System.out.println("From DB");
 //        EmployeeDto employeeDto = new EmployeeDto();
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new RuntimeException());
 

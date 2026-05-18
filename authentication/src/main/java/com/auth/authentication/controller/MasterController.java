@@ -27,7 +27,8 @@ public class MasterController {
     @GetMapping("/ip")
     public ResponseEntity<String> ip() {
         log.info("Inside ip method");
-        return new ResponseEntity<>("I Love my employee", HttpStatus.OK);
+        String s = userService.addValue();
+        return new ResponseEntity<>(s+" I Love my employee", HttpStatus.OK);
     }
     @GetMapping("/up")
     public ResponseEntity<String> up() {
