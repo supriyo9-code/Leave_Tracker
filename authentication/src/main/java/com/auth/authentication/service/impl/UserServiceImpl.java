@@ -5,15 +5,18 @@ import com.auth.authentication.entity.UserEntity;
 import com.auth.authentication.repository.UserRepository;
 import com.auth.authentication.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class UserServiceImpl  implements UserService {
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -21,7 +24,7 @@ public class UserServiceImpl  implements UserService {
         log.info("Signup Request: inside service");
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(userDto.getEmail());
-        userEntity.setPassword(userDto.getPassword());
+        userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userEntity.setFirstName(userDto.getFirstName());
         userEntity.setLastName(userDto.getLastName());
         userEntity.setPhone(userDto.getPhone());
