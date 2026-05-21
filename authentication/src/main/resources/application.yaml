@@ -15,4 +15,7 @@ spring:
 
 protyay:
   val: "Hi"
+jwt:
+  security-key: "abSpRAcrtpqstVpqmbtanlsrfbfbfvsxsbfsxjbvjgxb"
+  time: 30000
 
