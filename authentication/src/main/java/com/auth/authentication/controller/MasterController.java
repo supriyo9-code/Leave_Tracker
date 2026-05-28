@@ -2,6 +2,7 @@ package com.auth.authentication.controller;
 
 import com.auth.authentication.dto.LoginDto;
 import com.auth.authentication.dto.UserDto;
+import com.auth.authentication.jwt.JwtService;
 import com.auth.authentication.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class MasterController {
     private UserService userService;
     private AuthenticationManager authenticationManager;
+    private JwtService jwtService;
 
     @PostMapping("/signup")
     public ResponseEntity<UserDto> signup(@RequestBody UserDto userDto) {
@@ -26,15 +28,20 @@ public class MasterController {
         return new ResponseEntity<>(userDto1, HttpStatus.OK);
     }
     @GetMapping("/ip")
-    public ResponseEntity<String> ip() {
+    public ResponseEntity<String> ip(@RequestHeader("Authorization") String authHeader) {
         log.info("Inside ip method");
 //        String s = userService.addValue();
-        return new ResponseEntity<>(" I Love my employee", HttpStatus.OK);
+        String token = authHeader.substring(7);
+         String name = jwtService.getClaimsFromToken(token).getSubject();
+
+        return new ResponseEntity<>(name+"  Love my employee", HttpStatus.OK);
     }
     @GetMapping("/up")
-    public ResponseEntity<String> up() {
+    public ResponseEntity<String> up(@RequestHeader("Authorization") String authHeader) {
         log.info("Inside up method");
-        return new ResponseEntity<>("I Love my manager", HttpStatus.OK);
+        String token = authHeader.substring(7);
+        String name = jwtService.getClaimsFromToken(token).getSubject();
+        return new ResponseEntity<>(name+" Love my manager", HttpStatus.OK);
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {

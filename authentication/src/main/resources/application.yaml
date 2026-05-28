@@ -17,5 +17,5 @@ protyay:
   val: "Hi"
 jwt:
   security-key: "abSpRAcrtpqstVpqmbtanlsrfbfbfvsxsbfsxjbvjgxb"
-  time: 30000
+  time: 300000
 
