@@ -12,22 +12,22 @@ import com.leave_service.leave_service.repository.LeaveRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+@AllArgsConstructor
 @Service
 @Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private RestTemplate restTemplate;
+    private KafkaTemplate<String, Leave> kafkaTemplate;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, RestTemplate restTemplate) {
-        this.employeeRepository = employeeRepository;
-        this.restTemplate = restTemplate;
-    }
+
 
 
     @CircuitBreaker(name = "getEmployee",fallbackMethod = "fallbackGetEmployee")
@@ -145,6 +145,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Leave leave= restTemplate.postForEntity("http://localhost:8081/api/v1/leave/apply", leaveDto, Leave.class).getBody();
         log.info("applyLeave:{}",leaveDto);
+        kafkaTemplate.send("Notification",leave);
         return leave;
     }
 }
